@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "exec": "tsx --env-file=.env",
+    "lint:fix": "eslint . --fix",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "listen": "tsx --env-file=.env --watch src/scripts/listen-to-change-streams.ts"
   },
   "dependencies": {
     "lodash": "^4.17.21",
