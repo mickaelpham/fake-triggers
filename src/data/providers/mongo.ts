@@ -19,6 +19,27 @@ export const COLLECTIONS = {
   WORKSPACES: mongo.db().collection<Workspace>('workspaces'),
 } as const
 
+/**
+ * Ensure we are setting the collections to have pre and post images for change streams
+ */
+export async function modifyCollectionsAndParams() {
+  await mongo.db('admin').command({
+    setClusterParameter: {
+      changeStreamOptions: { preAndPostImages: { expireAfterSeconds: 100 } },
+    },
+  })
+
+  await mongo.db().command({
+    collMod: 'workspace_members',
+    changeStreamPreAndPostImages: { enabled: true },
+  })
+
+  await mongo.db().command({
+    collMod: 'users',
+    changeStreamPreAndPostImages: { enabled: true },
+  })
+}
+
 export async function createIndexes() {
   await COLLECTIONS.SEARCH_WORKSPACE_MEMBERS.createIndexes([
     { key: { workspaceId: 1, userId: 1 }, unique: true },
@@ -47,6 +68,6 @@ export async function createIndexes() {
   ])
 }
 
-export async function dropIndexes() {
-  await Promise.all(Object.values(COLLECTIONS).map(c => c.dropIndexes()))
+export async function dropDatabase() {
+  await mongo.db().dropDatabase()
 }
