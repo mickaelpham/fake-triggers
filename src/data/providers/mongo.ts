@@ -1,3 +1,6 @@
+import type { Company } from '../models/company.js'
+import type { GroupMember } from '../models/group-member.js'
+import type { Group } from '../models/group.js'
 import type { SearchWorkspaceMember } from '../models/search-workspace-member.js'
 import type { User } from '../models/user.js'
 import type { WorkspaceMember } from '../models/workspace-member.js'
@@ -13,6 +16,9 @@ if (!DATABASE_URL) {
 export const mongo = new MongoClient(DATABASE_URL)
 
 export const COLLECTIONS = {
+  COMPANIES: mongo.db().collection<Company>('companies'),
+  GROUP_MEMBERS: mongo.db().collection<GroupMember>('group_members'),
+  GROUPS: mongo.db().collection<Group>('groups'),
   SEARCH_WORKSPACE_MEMBERS: mongo.db().collection<SearchWorkspaceMember>('search_workspace_members'),
   USERS: mongo.db().collection<User>('users'),
   WORKSPACE_MEMBERS: mongo.db().collection<WorkspaceMember>('workspace_members'),
@@ -41,6 +47,21 @@ export async function modifyCollectionsAndParams() {
 }
 
 export async function createIndexes() {
+  await COLLECTIONS.COMPANIES.createIndexes([
+    { key: { id: 1 }, unique: true },
+  ])
+
+  await COLLECTIONS.GROUP_MEMBERS.createIndexes([
+    { key: { groupId: 1, userId: 1 }, unique: true },
+    { key: { userId: 1 } },
+  ])
+
+  await COLLECTIONS.GROUPS.createIndexes([
+    { key: { id: 1 }, unique: true },
+    { key: { companyId: 1 } },
+    { key: { 'workspaces.workspaceId': 1 } },
+  ])
+
   await COLLECTIONS.SEARCH_WORKSPACE_MEMBERS.createIndexes([
     { key: { workspaceId: 1, userId: 1 }, unique: true },
     { key: { workspaceId: 1, role: 1 } },

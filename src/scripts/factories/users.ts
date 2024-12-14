@@ -8,11 +8,11 @@ export function buildUser(params?: Partial<User>): User {
   const email = faker.internet.email({ firstName, lastName }).toLocaleLowerCase()
 
   return {
-    id: generateId('user'),
-    firstName,
-    lastName,
-    email,
     createdAt: faker.date.past({ years: 15 }),
+    email,
+    firstName,
+    id: generateId('user'),
+    lastName,
     updatedAt: faker.date.recent({ days: 500 }),
     ...params,
   }

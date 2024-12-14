@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 
 const PREFIXES = {
   company: 'cpy_',
+  group: 'grp_',
   user: 'usr_',
   workspace: 'wrk_',
 } as const

@@ -5,6 +5,7 @@ import { pino } from 'pino'
 const options: LoggerOptions = process.env.NODE_ENV === 'production'
   ? {}
   : {
+      level: 'debug',
       transport: {
         target: 'pino-pretty',
         options: { colorize: true },
