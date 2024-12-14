@@ -4,15 +4,17 @@ import { buildUser } from '../factories/users.js'
 import { buildWorkspaceMember } from '../factories/workspace-member.js'
 import { buildWorkspace } from '../factories/workspace.js'
 
+const SEED_WORKSPACES = 3
+
 async function newUserWithWorkspace() {
   const user = buildUser()
-  await COLLECTIONS.USERS.insertOne({ ...user }, { ignoreUndefined: true })
+  await COLLECTIONS.USERS.insertOne(user, { ignoreUndefined: true })
 
-  const workspace = buildWorkspace()
-  await COLLECTIONS.WORKSPACES.insertOne({ ...workspace }, { ignoreUndefined: true })
+  const workspaces = Array.from({ length: SEED_WORKSPACES }, buildWorkspace)
+  await COLLECTIONS.WORKSPACES.insertMany(workspaces, { ignoreUndefined: true })
 
-  const workspaceMember = buildWorkspaceMember(user, workspace)
-  await COLLECTIONS.WORKSPACE_MEMBERS.insertOne({ ...workspaceMember }, { ignoreUndefined: true })
+  const workspaceMembers = workspaces.map(workspace => buildWorkspaceMember(user, workspace))
+  await COLLECTIONS.WORKSPACE_MEMBERS.insertMany(workspaceMembers, { ignoreUndefined: true })
 }
 
 newUserWithWorkspace()

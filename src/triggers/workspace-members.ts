@@ -56,6 +56,7 @@ export async function onWorkspaceMembersUpdate(
         updatedAt: fullDocument.updatedAt,
       },
     },
+    { ignoreUndefined: true },
   )
 }
 
