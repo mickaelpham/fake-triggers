@@ -79,6 +79,7 @@ export async function createIndexes() {
     { key: { workspaceId: 1, fullName: 1 } },
     { key: { workspaceId: 1, createdAt: 1 } },
     { key: { workspaceId: 1, updatedAt: 1 } },
+    { key: { 'groups.groupId': 1 }, sparse: true },
   ])
 
   await COLLECTIONS.USERS.createIndexes([

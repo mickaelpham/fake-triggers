@@ -1,6 +1,7 @@
 import { logger } from '../common/logger.js'
 import { COLLECTIONS } from '../data/providers/mongo.js'
 import { onGroupMembersDelete, onGroupMembersInsert } from '../triggers/group-members.js'
+import { onGroupsUpdate } from '../triggers/groups.js'
 import { onUsersUpdate } from '../triggers/users.js'
 import {
   onWorkspaceMembersDelete,
@@ -27,6 +28,24 @@ function listenToChangeStreams() {
         break
       default:
         logger.debug({ operationType: next.operationType }, 'unhandled operation type for group members')
+    }
+  })
+
+  const changeStreamGroups = COLLECTIONS.GROUPS.watch(
+    [],
+    {
+      fullDocumentBeforeChange: 'required',
+      fullDocument: 'required',
+    },
+  )
+  changeStreamGroups.on('change', (next) => {
+    logger.info({ operationType: next.operationType }, 'event received for groups')
+    switch (next.operationType) {
+      case 'update':
+        onGroupsUpdate(next.updateDescription, next.fullDocument!, next.fullDocumentBeforeChange!)
+        break
+      default:
+        logger.debug({ operationType: next.operationType }, 'unhandled operation type for groups')
     }
   })
 

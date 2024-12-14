@@ -38,7 +38,7 @@ export async function onGroupMembersInsert(fullDocument: GroupMember) {
       {
         $set: {
           'updatedAt': fullDocument.updatedAt,
-          'group.$[groupId]': {
+          'group.$[group]': {
             groupId: group.id,
             license: group.license,
             role: workspace.role,
@@ -46,7 +46,7 @@ export async function onGroupMembersInsert(fullDocument: GroupMember) {
         },
       },
       {
-        arrayFilters: [{ groupId: group.id }],
+        arrayFilters: [{ 'group.groupId': group.id }],
         ignoreUndefined: true,
       },
     )
