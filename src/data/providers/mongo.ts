@@ -36,12 +36,22 @@ export async function modifyCollectionsAndParams() {
   })
 
   await mongo.db().command({
-    collMod: 'workspace_members',
+    collMod: 'group_members',
+    changeStreamPreAndPostImages: { enabled: true },
+  })
+
+  await mongo.db().command({
+    collMod: 'groups',
     changeStreamPreAndPostImages: { enabled: true },
   })
 
   await mongo.db().command({
     collMod: 'users',
+    changeStreamPreAndPostImages: { enabled: true },
+  })
+
+  await mongo.db().command({
+    collMod: 'workspace_members',
     changeStreamPreAndPostImages: { enabled: true },
   })
 }

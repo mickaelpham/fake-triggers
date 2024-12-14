@@ -27,6 +27,7 @@ export async function onWorkspaceMembersInsert(fullDocument: WorkspaceMember) {
     createdAt: fullDocument.createdAt,
     email: user.email,
     fullName: getUserFullName(user),
+    groups: [],
     role: fullDocument.role,
     updatedAt: fullDocument.updatedAt,
     userCompanyId: user.companyId,

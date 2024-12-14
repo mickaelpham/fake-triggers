@@ -4,7 +4,7 @@ import { logger } from '../common/logger.js'
 import { COLLECTIONS } from '../data/providers/mongo.js'
 
 export async function onUsersUpdate(fullDocument: User) {
-  logger.info({ fullDocument }, 'onUserUpdate')
+  logger.info({ fullDocument }, 'onUsersUpdate')
 
   await COLLECTIONS.SEARCH_WORKSPACE_MEMBERS.updateMany(
     { userId: fullDocument.id },
