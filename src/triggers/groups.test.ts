@@ -101,4 +101,24 @@ describe('onGroupUpdate', () => {
 
     expect(record.groups).toContainEqual({ groupId: groups.admin.id, role: 'admin', license: 'full' })
   })
+
+  it<LocalTestContext>('removes the group from the records when the workspace is unmapped', async ({ groups, users }) => {
+    await COLLECTIONS.GROUPS.updateMany(
+      { id: { $in: [groups.admin.id, groups.member.id] } },
+      { $set: { workspaces: [] } },
+    )
+
+    // give the triggers some time to execute
+    await sleepFor(SLEEP_DURATION_MS)
+
+    const records = await COLLECTIONS.SEARCH_WORKSPACE_MEMBERS
+      .find({ userId: { $in: users.map(u => u.id) } })
+      .toArray()
+
+    expect(records.length).toBe(users.length)
+
+    for (const record of records) {
+      expect(record.groups).toStrictEqual([])
+    }
+  })
 })
