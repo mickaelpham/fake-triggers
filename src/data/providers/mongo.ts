@@ -13,7 +13,7 @@ if (!DATABASE_URL) {
   throw new Error('missing DATABASE_URL env var')
 }
 
-export const mongo = new MongoClient(DATABASE_URL)
+export const mongo = new MongoClient(DATABASE_URL, { ignoreUndefined: true })
 
 export const COLLECTIONS = {
   COMPANIES: mongo.db().collection<Company>('companies'),
