@@ -1,3 +1,6 @@
+# Starting a local MongoDB with a replica set copied from Prisma docker compose file
+# https://github.com/prisma/prisma/blob/main/docker/docker-compose.yml
+
 services:
   mongo:
     build:
