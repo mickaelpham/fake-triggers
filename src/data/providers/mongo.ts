@@ -35,24 +35,16 @@ export async function modifyCollectionsAndParams() {
     },
   })
 
-  await mongo.db().command({
-    collMod: 'group_members',
-    changeStreamPreAndPostImages: { enabled: true },
-  })
+  const collections = ['group_members', 'groups', 'users', 'workspace_members']
+  for (const collection of collections) {
+    await setChangeStreamPreAndPostImages(collection, true)
+  }
+}
 
+export async function setChangeStreamPreAndPostImages(collection: string, enabled: boolean) {
   await mongo.db().command({
-    collMod: 'groups',
-    changeStreamPreAndPostImages: { enabled: true },
-  })
-
-  await mongo.db().command({
-    collMod: 'users',
-    changeStreamPreAndPostImages: { enabled: true },
-  })
-
-  await mongo.db().command({
-    collMod: 'workspace_members',
-    changeStreamPreAndPostImages: { enabled: true },
+    collMod: collection,
+    changeStreamPreAndPostImages: { enabled },
   })
 }
 

@@ -1,5 +1,6 @@
 import type { UpdateDescription } from 'mongodb'
 import type { Group } from '../data/models/group.js'
+import { Presets, SingleBar } from 'cli-progress'
 import _ from 'lodash'
 import { getUserFullName } from '../common/get-user-full-name.js'
 import { logger } from '../common/logger.js'
@@ -77,9 +78,14 @@ export async function onGroupsUpdate(
     .find({ id: { $in: groupMembers.map(m => m.userId) } })
     .toArray()
 
+  logger.info({ users: users.length }, 'retrieved user profiles from group')
+
   const userById = _.keyBy(users, 'id')
 
   for (const workspace of added) {
+    const bar = new SingleBar({}, Presets.shades_classic)
+    bar.start(users.length, 0)
+
     for (const groupMember of groupMembers) {
       const user = userById[groupMember.userId]
 
@@ -101,6 +107,9 @@ export async function onGroupsUpdate(
         },
         { ignoreUndefined: true, upsert: true },
       )
+
+      bar.increment()
     }
+    bar.stop()
   }
 }
